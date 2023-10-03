@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <h1>There's beauty in simple weather.</h1>
+        <table class="centerContainer">
+            <tr>
+                <td>
+                    <label id="cityLabel" for="cityNameTextField">Enter a city:</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="cityNameTextField" type="text" name="cityName" />
+                    <input id="submitButton" type="button" value="Submit" onclick="submitAction()" />
+                </td>
+            </tr>
+        </table>
+        <div class="spacer"></div>
+        <table width="60%" class="centerContainer" cellpadding="5px">
+            <tr>
+                <th>Temperature</th>
+                <td id="temperatureField">0</td>
+            </tr>
+            <tr>
+                <th>Feels Like</th>
+                <td id="feelsLikeField">0</td>
+            </tr>
+            <tr>
+                <th>Humidity</th>
+                <td id="humidityField">0</td>
+            </tr>
+            <tr>
+                <th>Atmospheric Pressure</th>
+                <td id="pressureField">0</td>
+            </tr>
+            <tr>
+                <th>Weather</th>
+                <td id="weatherField">N/A</td>
+            </tr>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        // JQuery Syntax
+        const cityElementJquery = $("#cityNameTextField");
+
+        // ES5 function
+        async function submitAction() {
+            const APIKEY = "6fd254392eb10d3298ac4ce720efc54a"; // Replace with your API key
+            const cityName = cityElementJquery.val();
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${APIKEY}&units=metric`;
+            const response = await fetch(url);
+
+            if (response.status === 200) {
+                const weatherData = await response.json();
+                console.log(weatherData);
+                $("#temperatureField").html(`${weatherData.main.temp}°C`);
+                $("#feelsLikeField").html(`${weatherData.main.feels_like}°C`);
+                $("#humidityField").html(`${weatherData.main.humidity}%`);
+                $("#pressureField").html(`${weatherData.main.pressure} hPa`);
+                
+                // Get the weather condition
+                const weatherCondition = weatherData.weather[0].description;
+                $("#weatherField").html(capitalizeFirstLetter(weatherCondition));
+
+                // Set background image based on weather condition
+                setBackgroundImage(weatherCondition);
+            } else if (response.status === 404) {
+                alert("Invalid City");
+            } else {
+                console.log(response.status);
+            }
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function setBackgroundImage(weatherCondition) {
+    const body = $("body");
+    const lowercaseCondition = weatherCondition.toLowerCase();
+
+    if (lowercaseCondition.includes("clear") || 
+    
+    lowercaseCondition.includes("sunny")) {
+        body.css("background-image", 'url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.hdwallpapers.in%2Fdownload%2Fcloudy_landscape_4k-HD.jpg&f=1&nofb=1&ipt=5b0e683336e875f83c206cc62999bf4da3b8b587d085681cdd49ed0cf42c0204&ipo=images")');
+    } else if (lowercaseCondition.includes("clouds")) {
+        body.css("background-image", 'url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp6589793.jpg&f=1&nofb=1&ipt=861a13b88faf1353d200cda0e312866a650ed5d2a79ef5daf23c7e5b6aec57bb&ipo=images")');
+    } else if (lowercaseCondition.includes("rain")) {
+        body.css("background-image", 'url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.Wp2xEYtVH4j_cl6TmFyQ0AHaEK%26pid%3DApi&f=1&ipt=42b938a2e82a6d06e62cc32408d283688aff3177a0a02fed789aee99caab1f96&ipo=images")');
+    } else if (lowercaseCondition.includes("snow")) {
+        body.css("background-image", 'url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages3.alphacoders.com%2F994%2F994706.jpg&f=1&nofb=1&ipt=e288ffa8fe4f976c25650527f2f143a0824758328620e325a30e97aa275a81c4&ipo=images")');
+    } else {
+        body.css("background-image", 'url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.wallpapersden.com%2Fimage%2Fdownload%2Faurora-4k-borealis_bGVobWiUmZqaraWkpJRobWllrWdpZWU.jpg&f=1&nofb=1&ipt=aea9a565e18f2b8392cee634fbd9fa815adecd35c55c507c09cac00ca4f386ca&ipo=images")');
+    }
+}
+
+
+        
+    </script>
+</body>
+</html>
